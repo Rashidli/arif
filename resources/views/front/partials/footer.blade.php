@@ -34,7 +34,7 @@
         <div class="footer-social">
             @if(($socials ?? collect())->count() > 0)
                 @foreach($socials as $social)
-                    <a href="{{ $social->url }}" target="_blank" rel="noopener" class="footer-social-link" title="{{ $social->name }}">
+                    <a href="{{ $social->link }}" target="_blank" rel="noopener" class="footer-social-link" title="{{ $social->title }}">
                         {!! $social->icon !!}
                     </a>
                 @endforeach
