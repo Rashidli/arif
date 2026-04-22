@@ -236,30 +236,48 @@ class ProductionSeeder extends Seeder
     private function createWords(): void
     {
         $wordsData = [
-            'read_more' => ['az' => 'Daha çox oxu', 'en' => 'Read more', 'ru' => 'Читать далее'],
-            'more' => ['az' => 'Daha çox', 'en' => 'More', 'ru' => 'Ещё'],
-            'views_short' => ['az' => 'Baxış', 'en' => 'Views', 'ru' => 'Просмотров'],
-            'search_placeholder' => ['az' => 'Axtar...', 'en' => 'Search...', 'ru' => 'Поиск...'],
+            // Navigation
             'nav_home' => ['az' => 'Ana Səhifə', 'en' => 'Home', 'ru' => 'Главная'],
             'nav_contact' => ['az' => 'Əlaqə', 'en' => 'Contact', 'ru' => 'Контакты'],
             'nav_blogs' => ['az' => 'Bloq', 'en' => 'Blog', 'ru' => 'Блог'],
+
+            // Common
+            'read_more' => ['az' => 'Daha çox oxu', 'en' => 'Read more', 'ru' => 'Читать далее'],
+            'more' => ['az' => 'Daha çox', 'en' => 'More', 'ru' => 'Ещё'],
             'all' => ['az' => 'Hamısı', 'en' => 'All', 'ru' => 'Все'],
+            'loading' => ['az' => 'Yüklənir...', 'en' => 'Loading...', 'ru' => 'Загрузка...'],
+            'back_to_home' => ['az' => 'Ana səhifəyə qayıt', 'en' => 'Back to home', 'ru' => 'Вернуться на главную'],
+
+            // Blog
+            'views' => ['az' => 'Baxış', 'en' => 'Views', 'ru' => 'Просмотров'],
+            'views_short' => ['az' => 'Baxış', 'en' => 'Views', 'ru' => 'Просм.'],
             'latest_posts' => ['az' => 'Son Yazılar', 'en' => 'Latest Posts', 'ru' => 'Последние статьи'],
-            'no_categories_selected' => ['az' => 'Ana səhifə üçün kateqoriya seçilməyib.', 'en' => 'No categories selected for homepage.', 'ru' => 'Категории для главной страницы не выбраны.'],
             'related_posts' => ['az' => 'Oxşar Yazılar', 'en' => 'Related Posts', 'ru' => 'Похожие статьи'],
             'most_read' => ['az' => 'Ən Çox Oxunanlar', 'en' => 'Most Read', 'ru' => 'Самые читаемые'],
+            'no_posts_found' => ['az' => 'Heç bir yazı tapılmadı', 'en' => 'No posts found', 'ru' => 'Статьи не найдены'],
+            'no_categories_selected' => ['az' => 'Ana səhifə üçün kateqoriya seçilməyib.', 'en' => 'No categories selected for homepage.', 'ru' => 'Категории для главной страницы не выбраны.'],
+
+            // Search & Filter
+            'search_placeholder' => ['az' => 'Axtar...', 'en' => 'Search...', 'ru' => 'Поиск...'],
             'tags' => ['az' => 'Teqlər', 'en' => 'Tags', 'ru' => 'Теги'],
             'categories' => ['az' => 'Kateqoriyalar', 'en' => 'Categories', 'ru' => 'Категории'],
-            'no_posts_found' => ['az' => 'Heç bir yazı tapılmadı', 'en' => 'No posts found', 'ru' => 'Статьи не найдены'],
+
+            // Share
             'share' => ['az' => 'Paylaş', 'en' => 'Share', 'ru' => 'Поделиться'],
+            'copy_link' => ['az' => 'Linki kopyala', 'en' => 'Copy link', 'ru' => 'Копировать ссылку'],
+            'link_copied' => ['az' => 'Link kopyalandı!', 'en' => 'Link copied!', 'ru' => 'Ссылка скопирована!'],
+
+            // Contact Form
             'name' => ['az' => 'Ad', 'en' => 'Name', 'ru' => 'Имя'],
+            'surname' => ['az' => 'Soyad', 'en' => 'Surname', 'ru' => 'Фамилия'],
             'email' => ['az' => 'E-poçt', 'en' => 'Email', 'ru' => 'Эл. почта'],
             'phone' => ['az' => 'Telefon', 'en' => 'Phone', 'ru' => 'Телефон'],
+            'subject' => ['az' => 'Mövzu', 'en' => 'Subject', 'ru' => 'Тема'],
             'message' => ['az' => 'Mesaj', 'en' => 'Message', 'ru' => 'Сообщение'],
             'send' => ['az' => 'Göndər', 'en' => 'Send', 'ru' => 'Отправить'],
             'contact_success' => ['az' => 'Mesajınız uğurla göndərildi!', 'en' => 'Your message has been sent successfully!', 'ru' => 'Ваше сообщение успешно отправлено!'],
-            'back_to_home' => ['az' => 'Ana səhifəyə qayıt', 'en' => 'Back to home', 'ru' => 'Вернуться на главную'],
-            'loading' => ['az' => 'Yüklənir...', 'en' => 'Loading...', 'ru' => 'Загрузка...'],
+
+            // Footer
             'copyright' => ['az' => 'Bütün hüquqlar qorunur', 'en' => 'All rights reserved', 'ru' => 'Все права защищены'],
         ];
 

@@ -35,12 +35,18 @@ class FrontController extends Controller
             : null;
 
         // Categories with blogs for homepage sections
+        // Note: Don't use take() in eager loading - it limits total results, not per category
         $homeCategories = BlogCategory::with(['blogs' => function($query) {
-            $query->active()->latest()->take(12);
+            $query->active()->latest();
         }])
             ->active()
             ->showOnHome()
-            ->get();
+            ->get()
+            ->map(function($category) {
+                // Limit blogs to 12 per category after loading
+                $category->setRelation('blogs', $category->blogs->take(12));
+                return $category;
+            });
 
         return view('front.home', compact('seo', 'sliderBlogs', 'featuredBlog', 'homeCategories'));
     }

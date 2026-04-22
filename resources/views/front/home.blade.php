@@ -81,7 +81,6 @@
                                         <h3 class="blog-card-v2-title">{{ $blog->title }}</h3>
                                         <p class="blog-card-v2-excerpt">{{ Str::limit($blog->short_description ?? strip_tags($blog->description), 100) }}</p>
                                         <div class="blog-card-v2-footer">
-                                            <span class="blog-card-v2-category">{{ $blog->category->name ?? '' }}</span>
                                             <span class="blog-card-v2-arrow">
                                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                     <path d="M5 12h14M12 5l7 7-7 7"/>
