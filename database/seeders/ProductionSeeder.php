@@ -82,11 +82,36 @@ class ProductionSeeder extends Seeder
     private function createBlogCategories(): void
     {
         $categories = [
-            ['az' => 'Texnologiya', 'en' => 'Technology', 'ru' => 'Технологии', 'order' => 1, 'show_on_home' => true],
-            ['az' => 'Proqramlaşdırma', 'en' => 'Programming', 'ru' => 'Программирование', 'order' => 2, 'show_on_home' => true],
-            ['az' => 'Dizayn', 'en' => 'Design', 'ru' => 'Дизайн', 'order' => 3, 'show_on_home' => true],
-            ['az' => 'Startup', 'en' => 'Startup', 'ru' => 'Стартап', 'order' => 4, 'show_on_home' => true],
-            ['az' => 'Karyera', 'en' => 'Career', 'ru' => 'Карьера', 'order' => 5, 'show_on_home' => false],
+            [
+                'az' => ['name' => 'Texnologiya', 'slug' => 'texnologiya'],
+                'en' => ['name' => 'Technology', 'slug' => 'technology'],
+                'ru' => ['name' => 'Технологии', 'slug' => 'tekhnologii'],
+                'order' => 1, 'show_on_home' => true
+            ],
+            [
+                'az' => ['name' => 'Proqramlaşdırma', 'slug' => 'proqramlasdirma'],
+                'en' => ['name' => 'Programming', 'slug' => 'programming'],
+                'ru' => ['name' => 'Программирование', 'slug' => 'programmirovanie'],
+                'order' => 2, 'show_on_home' => true
+            ],
+            [
+                'az' => ['name' => 'Dizayn', 'slug' => 'dizayn'],
+                'en' => ['name' => 'Design', 'slug' => 'design'],
+                'ru' => ['name' => 'Дизайн', 'slug' => 'dizain'],
+                'order' => 3, 'show_on_home' => true
+            ],
+            [
+                'az' => ['name' => 'Startup', 'slug' => 'startup'],
+                'en' => ['name' => 'Startup', 'slug' => 'startup'],
+                'ru' => ['name' => 'Стартап', 'slug' => 'startap'],
+                'order' => 4, 'show_on_home' => true
+            ],
+            [
+                'az' => ['name' => 'Karyera', 'slug' => 'karyera'],
+                'en' => ['name' => 'Career', 'slug' => 'career'],
+                'ru' => ['name' => 'Карьера', 'slug' => 'karera'],
+                'order' => 5, 'show_on_home' => false
+            ],
         ];
 
         foreach ($categories as $cat) {
@@ -99,15 +124,12 @@ class ProductionSeeder extends Seeder
                 ]
             );
 
-            if (!$category->translate('az')) {
-                $category->translateOrNew('az')->name = $cat['az'];
-                $category->translateOrNew('az')->slug = \Str::slug($cat['az']);
-                $category->translateOrNew('en')->name = $cat['en'];
-                $category->translateOrNew('en')->slug = \Str::slug($cat['en']);
-                $category->translateOrNew('ru')->name = $cat['ru'];
-                $category->translateOrNew('ru')->slug = \Str::slug($cat['ru']);
-                $category->save();
+            // Always update translations to ensure they're correct
+            foreach (['az', 'en', 'ru'] as $locale) {
+                $category->translateOrNew($locale)->name = $cat[$locale]['name'];
+                $category->translateOrNew($locale)->slug = $cat[$locale]['slug'];
             }
+            $category->save();
         }
     }
 
@@ -213,7 +235,40 @@ class ProductionSeeder extends Seeder
 
     private function createWords(): void
     {
-        // Words are created dynamically via word() helper
-        // Add any essential translations here if needed
+        $wordsData = [
+            'read_more' => ['az' => 'Daha çox oxu', 'en' => 'Read more', 'ru' => 'Читать далее'],
+            'more' => ['az' => 'Daha çox', 'en' => 'More', 'ru' => 'Ещё'],
+            'views_short' => ['az' => 'Baxış', 'en' => 'Views', 'ru' => 'Просмотров'],
+            'search_placeholder' => ['az' => 'Axtar...', 'en' => 'Search...', 'ru' => 'Поиск...'],
+            'nav_home' => ['az' => 'Ana Səhifə', 'en' => 'Home', 'ru' => 'Главная'],
+            'nav_contact' => ['az' => 'Əlaqə', 'en' => 'Contact', 'ru' => 'Контакты'],
+            'nav_blogs' => ['az' => 'Bloq', 'en' => 'Blog', 'ru' => 'Блог'],
+            'all' => ['az' => 'Hamısı', 'en' => 'All', 'ru' => 'Все'],
+            'latest_posts' => ['az' => 'Son Yazılar', 'en' => 'Latest Posts', 'ru' => 'Последние статьи'],
+            'no_categories_selected' => ['az' => 'Ana səhifə üçün kateqoriya seçilməyib.', 'en' => 'No categories selected for homepage.', 'ru' => 'Категории для главной страницы не выбраны.'],
+            'related_posts' => ['az' => 'Oxşar Yazılar', 'en' => 'Related Posts', 'ru' => 'Похожие статьи'],
+            'most_read' => ['az' => 'Ən Çox Oxunanlar', 'en' => 'Most Read', 'ru' => 'Самые читаемые'],
+            'tags' => ['az' => 'Teqlər', 'en' => 'Tags', 'ru' => 'Теги'],
+            'categories' => ['az' => 'Kateqoriyalar', 'en' => 'Categories', 'ru' => 'Категории'],
+            'no_posts_found' => ['az' => 'Heç bir yazı tapılmadı', 'en' => 'No posts found', 'ru' => 'Статьи не найдены'],
+            'share' => ['az' => 'Paylaş', 'en' => 'Share', 'ru' => 'Поделиться'],
+            'name' => ['az' => 'Ad', 'en' => 'Name', 'ru' => 'Имя'],
+            'email' => ['az' => 'E-poçt', 'en' => 'Email', 'ru' => 'Эл. почта'],
+            'phone' => ['az' => 'Telefon', 'en' => 'Phone', 'ru' => 'Телефон'],
+            'message' => ['az' => 'Mesaj', 'en' => 'Message', 'ru' => 'Сообщение'],
+            'send' => ['az' => 'Göndər', 'en' => 'Send', 'ru' => 'Отправить'],
+            'contact_success' => ['az' => 'Mesajınız uğurla göndərildi!', 'en' => 'Your message has been sent successfully!', 'ru' => 'Ваше сообщение успешно отправлено!'],
+            'back_to_home' => ['az' => 'Ana səhifəyə qayıt', 'en' => 'Back to home', 'ru' => 'Вернуться на главную'],
+            'loading' => ['az' => 'Yüklənir...', 'en' => 'Loading...', 'ru' => 'Загрузка...'],
+            'copyright' => ['az' => 'Bütün hüquqlar qorunur', 'en' => 'All rights reserved', 'ru' => 'Все права защищены'],
+        ];
+
+        foreach ($wordsData as $key => $translations) {
+            $word = Word::firstOrCreate(['key' => $key]);
+            foreach ($translations as $locale => $title) {
+                $word->translateOrNew($locale)->title = $title;
+            }
+            $word->save();
+        }
     }
 }
