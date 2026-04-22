@@ -35,7 +35,7 @@
                         </button>
                         <div class="lang-dropdown">
                             @foreach(['az' => 'AZ', 'en' => 'EN', 'ru' => 'RU'] as $code => $name)
-                                <a href="{{ isset($alternateUrls[$code]) ? $alternateUrls[$code] : LaravelLocalization::localizeURL(url()->current(), $code) }}"
+                                <a href="{{ isset($alternateUrls[$code]) ? $alternateUrls[$code] : LaravelLocalization::getLocalizedURL($code, null, [], true) }}"
                                    class="lang-item {{ app()->getLocale() == $code ? 'active' : '' }}">
                                     {{ $name }}
                                 </a>
@@ -67,9 +67,11 @@
                         {{ $category->name }}
                     </a>
                 @endforeach
+                {{-- Contact link commented out
                 <a href="{{ route('front.contact') }}" class="nav-link {{ request()->routeIs('front.contact') ? 'active' : '' }}">
                     {{ word('nav_contact', 'Əlaqə') }}
                 </a>
+                --}}
             </nav>
         </div>
     </div>
@@ -83,11 +85,11 @@
                     {{ $category->name }}
                 </a>
             @endforeach
-            <a href="{{ route('front.contact') }}" class="mobile-nav-link">{{ word('nav_contact', 'Əlaqə') }}</a>
+            {{-- <a href="{{ route('front.contact') }}" class="mobile-nav-link">{{ word('nav_contact', 'Əlaqə') }}</a> --}}
         </nav>
         <div class="mobile-lang">
             @foreach(['az' => 'AZ', 'en' => 'EN', 'ru' => 'RU'] as $code => $name)
-                <a href="{{ isset($alternateUrls[$code]) ? $alternateUrls[$code] : LaravelLocalization::localizeURL(url()->current(), $code) }}"
+                <a href="{{ isset($alternateUrls[$code]) ? $alternateUrls[$code] : LaravelLocalization::getLocalizedURL($code, null, [], true) }}"
                    class="mobile-lang-item {{ app()->getLocale() == $code ? 'active' : '' }}">
                     {{ $name }}
                 </a>

@@ -16,13 +16,13 @@
                 @foreach($categories ?? [] as $category)
                     <a href="{{ route('front.blogs.category', $category->slug) }}">{{ $category->name }}</a>
                 @endforeach
-                <a href="{{ route('front.contact') }}">{{ word('nav_contact', 'Əlaqə') }}</a>
+                {{-- <a href="{{ route('front.contact') }}">{{ word('nav_contact', 'Əlaqə') }}</a> --}}
             </nav>
 
             {{-- Language Switcher --}}
             <div class="footer-lang">
                 @foreach(['az' => 'AZ', 'en' => 'EN', 'ru' => 'RU'] as $code => $name)
-                    <a href="{{ isset($alternateUrls[$code]) ? $alternateUrls[$code] : LaravelLocalization::localizeURL(url()->current(), $code) }}"
+                    <a href="{{ isset($alternateUrls[$code]) ? $alternateUrls[$code] : LaravelLocalization::getLocalizedURL($code, null, [], true) }}"
                        class="footer-lang-item {{ app()->getLocale() == $code ? 'active' : '' }}">
                         {{ $name }}
                     </a>

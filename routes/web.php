@@ -84,7 +84,7 @@ Route::group([
     Route::get('/blog/c/{categorySlug}/t/{tagSlug}', [FrontController::class, 'blogsByCategoryAndTag'])->name('front.blogs.category.tag');
     Route::get('/blog/{slug}', [FrontController::class, 'blogDetail'])->name('front.blog.detail');
 
-    // Contact
-    Route::get('/contact', [FrontController::class, 'contact'])->name('front.contact');
-    Route::post('/contact', [FrontController::class, 'contactSubmit'])->name('front.contact.submit');
+    // Contact (commented out for now)
+    // Route::get('/contact', [FrontController::class, 'contact'])->name('front.contact');
+    // Route::post('/contact', [FrontController::class, 'contactSubmit'])->name('front.contact.submit');
 });
