@@ -156,7 +156,7 @@ class BlogSeeder extends Seeder
                     'is_active' => true,
                     'is_featured' => $isFeatured,
                     'is_slider' => $isSlider,
-                    'slider_order' => $isSlider ? $sliderIndex + 1 : null,
+                    'slider_order' => $isSlider ? $sliderIndex + 1 : 0,
                     'view' => rand(50, 2000),
                 ]);
 
