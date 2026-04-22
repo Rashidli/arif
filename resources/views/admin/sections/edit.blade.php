@@ -1,0 +1,139 @@
+@include('admin.includes.header')
+<div class="main-content">
+    <div class="page-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box d-flex align-items-center justify-content-between">
+                        <h4 class="mb-0">
+                            @switch($section->type)
+                                @case('about_hero') Hero bölməsi @break
+                                @case('about_contact') Əlaqə bölməsi @break
+                                @case('management_solution') İdarəetmə həlli @break
+                                @case('digital_management') Rəqəmsal idarəetmə @break
+                                @default Bölmə Redaktə
+                            @endswitch
+                        </h4>
+                    </div>
+                </div>
+            </div>
+
+            @if(session('message'))
+                <div class="alert alert-success">{{session('message')}}</div>
+            @endif
+            @if(session('error'))
+                <div class="alert alert-danger">{{session('error')}}</div>
+            @endif
+
+            <form action="{{ route('sections.update', $section->id) }}" method="post" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="card-title mb-0 text-white">Dil Versiyaları</h5>
+                            </div>
+                            <div class="card-body">
+                                <input type="hidden" name="type" value="{{ $section->type }}">
+
+                                <ul class="nav nav-pills nav-justified mb-3" role="tablist">
+                                    @foreach(['az', 'en', 'ru'] as $lang)
+                                        <li class="nav-item" role="presentation">
+                                            <a class="nav-link @if($loop->first) active @endif" data-bs-toggle="tab" href="#{{ $lang }}" role="tab">
+                                                {{ strtoupper($lang) }}
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+
+                                <div class="tab-content">
+                                    @foreach(['az', 'en', 'ru'] as $lang)
+                                        <div class="tab-pane fade @if($loop->first) show active @endif" id="{{ $lang }}" role="tabpanel">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Başlıq <span class="text-danger">*</span></label>
+                                                <input class="form-control" type="text" value="{{ old($lang . '_title', $section->translate($lang)->title ?? '') }}" name="{{ $lang }}_title">
+                                                @error("{$lang}_title")
+                                                    <small class="text-danger">{{ $message }}</small>
+                                                @enderror
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Açıqlama</label>
+                                                <textarea class="form-control" rows="3" name="{{ $lang }}_description">{{ old($lang . '_description', $section->translate($lang)->description ?? '') }}</textarea>
+                                            </div>
+                                            @if(!in_array($section->type, ['about_hero', 'about_contact', 'management_solution']))
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Düymə Mətni</label>
+                                                <input class="form-control" type="text" value="{{ old($lang . '_button_text', $section->translate($lang)->button_text ?? '') }}" name="{{ $lang }}_button_text">
+                                            </div>
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        @if($section->type === 'about_hero')
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Banner Şəkil</h5>
+                            </div>
+                            <div class="card-body">
+                                @if($section->banner_image)
+                                    <div class="mb-3">
+                                        <img src="{{ asset('storage/' . $section->banner_image) }}" alt="" style="max-width: 100%; height: auto; border-radius: 4px;">
+                                    </div>
+                                @endif
+                                <div class="mb-3">
+                                    <input class="form-control" type="file" name="banner_image" accept="image/*">
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Əsas Şəkil</h5>
+                            </div>
+                            <div class="card-body">
+                                @if($section->image)
+                                    <div class="mb-3">
+                                        <img src="{{ asset('storage/' . $section->image) }}" alt="" style="max-width: 100%; height: auto; border-radius: 4px;">
+                                    </div>
+                                @endif
+                                <div class="mb-3">
+                                    <input class="form-control" type="file" name="image" accept="image/*">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Parametrlər</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" name="status" value="1" {{ $section->status ? 'checked' : '' }}>
+                                        <label class="form-check-label">Aktiv</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary btn-lg">Yadda Saxla</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@include('admin.includes.footer')
