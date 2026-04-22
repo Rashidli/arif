@@ -56,6 +56,13 @@
     {{-- Footer --}}
     @include('front.partials.footer')
 
+    {{-- Back to Top Button --}}
+    <button id="backToTop" aria-label="Yuxarı qayıt">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 15l-6-6-6 6"/>
+        </svg>
+    </button>
+
     {{-- Scripts --}}
     @include('front.partials.scripts')
 
