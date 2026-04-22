@@ -7,32 +7,16 @@ if (!function_exists('word')) {
     function word(string $key, ?string $default = null): string
     {
         $locale = app()->getLocale();
+        $cacheKey = 'words_' . $locale;
 
-        // Find word by key
-        $word = Word::where('key', $key)->first();
+        // Cache words per locale for better performance
+        $words = Cache::remember($cacheKey, 3600, function () {
+            return Word::all()->mapWithKeys(function ($word) {
+                return [$word->key => $word->title]; // Uses Translatable's magic getter
+            })->toArray();
+        });
 
-        if ($word) {
-            // Get translation for current locale
-            $translation = $word->translate($locale);
-            if ($translation && $translation->title) {
-                return $translation->title;
-            }
-        }
-
-        // Auto-create word if it doesn't exist (for development)
-        if (!$word && $default) {
-            try {
-                $word = Word::create(['key' => $key]);
-                foreach (['az', 'en', 'ru'] as $lang) {
-                    $word->translateOrNew($lang)->title = $default;
-                }
-                $word->save();
-            } catch (\Exception $e) {
-                // Ignore if word creation fails
-            }
-        }
-
-        return $default ?? $key;
+        return $words[$key] ?? $default ?? $key;
     }
 }
 
