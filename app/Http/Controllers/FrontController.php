@@ -117,10 +117,12 @@ class FrontController extends Controller
 
         // Alternate URLs for language switching
         $alternateUrls = [];
+        $defaultLocale = config('app.locale', 'az');
         foreach (['az', 'en', 'ru'] as $locale) {
             $translation = $currentCategory->translate($locale);
             if ($translation && $translation->slug) {
-                $alternateUrls[$locale] = url($locale . '/category/' . $translation->slug);
+                $prefix = ($locale === $defaultLocale) ? '' : '/' . $locale;
+                $alternateUrls[$locale] = url($prefix . '/blog/c/' . $translation->slug);
             }
         }
 
@@ -154,10 +156,12 @@ class FrontController extends Controller
 
         // Alternate URLs for language switching
         $alternateUrls = [];
+        $defaultLocale = config('app.locale', 'az');
         foreach (['az', 'en', 'ru'] as $locale) {
             $translation = $currentTag->translate($locale);
             if ($translation && $translation->slug) {
-                $alternateUrls[$locale] = url($locale . '/tag/' . $translation->slug);
+                $prefix = ($locale === $defaultLocale) ? '' : '/' . $locale;
+                $alternateUrls[$locale] = url($prefix . '/blog/t/' . $translation->slug);
             }
         }
 
@@ -197,11 +201,13 @@ class FrontController extends Controller
 
         // Alternate URLs for language switching
         $alternateUrls = [];
+        $defaultLocale = config('app.locale', 'az');
         foreach (['az', 'en', 'ru'] as $locale) {
             $catTrans = $currentCategory->translate($locale);
             $tagTrans = $currentTag->translate($locale);
             if ($catTrans && $catTrans->slug && $tagTrans && $tagTrans->slug) {
-                $alternateUrls[$locale] = url($locale . '/category/' . $catTrans->slug . '/tag/' . $tagTrans->slug);
+                $prefix = ($locale === $defaultLocale) ? '' : '/' . $locale;
+                $alternateUrls[$locale] = url($prefix . '/blog/c/' . $catTrans->slug . '/t/' . $tagTrans->slug);
             }
         }
 
@@ -242,10 +248,12 @@ class FrontController extends Controller
 
         // Alternate URLs for language switching
         $alternateUrls = [];
+        $defaultLocale = config('app.locale', 'az');
         foreach (['az', 'en', 'ru'] as $locale) {
             $translation = $blog->translate($locale);
             if ($translation && $translation->slug) {
-                $alternateUrls[$locale] = url($locale . '/blog/' . $translation->slug);
+                $prefix = ($locale === $defaultLocale) ? '' : '/' . $locale;
+                $alternateUrls[$locale] = url($prefix . '/blog/' . $translation->slug);
             }
         }
 
