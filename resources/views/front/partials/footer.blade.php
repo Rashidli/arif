@@ -22,7 +22,7 @@
             {{-- Language Switcher --}}
             <div class="footer-lang">
                 @foreach(['az' => 'AZ', 'en' => 'EN', 'ru' => 'RU'] as $code => $name)
-                    <a href="{{ LaravelLocalization::localizeURL(url()->current(), $code) }}"
+                    <a href="{{ isset($alternateUrls[$code]) ? $alternateUrls[$code] : LaravelLocalization::localizeURL(url()->current(), $code) }}"
                        class="footer-lang-item {{ app()->getLocale() == $code ? 'active' : '' }}">
                         {{ $name }}
                     </a>

@@ -32,10 +32,42 @@ class BlogController extends Controller
         return $slug;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $blogs = Blog::with('category')->paginate(10);
-        return view('admin.blogs.index', compact('blogs'));
+        $query = Blog::with('category');
+
+        // Search by title
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->whereHas('translations', function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by category
+        if ($request->filled('category')) {
+            $query->where('blog_category_id', $request->category);
+        }
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('is_active', $request->status === 'active');
+        }
+
+        // Filter by featured
+        if ($request->filled('featured')) {
+            $query->where('is_featured', $request->featured === 'yes');
+        }
+
+        // Filter by slider
+        if ($request->filled('slider')) {
+            $query->where('is_slider', $request->slider === 'yes');
+        }
+
+        $blogs = $query->latest()->paginate(15)->withQueryString();
+        $categories = BlogCategory::all();
+
+        return view('admin.blogs.index', compact('blogs', 'categories'));
     }
 
     public function create()

@@ -115,7 +115,19 @@ class FrontController extends Controller
         $tags = Tag::active()->has('blogs')->get();
         $currentTag = null;
 
-        return view('front.blogs', compact('seo', 'blogs', 'categories', 'tags', 'currentCategory', 'currentTag'));
+        // Alternate URLs for language switching
+        $alternateUrls = [];
+        foreach (['az', 'en', 'ru'] as $locale) {
+            $translation = $currentCategory->translate($locale);
+            if ($translation && $translation->slug) {
+                $alternateUrls[$locale] = \LaravelLocalization::localizeURL(
+                    route('front.blogs.category', ['categorySlug' => $translation->slug]),
+                    $locale
+                );
+            }
+        }
+
+        return view('front.blogs', compact('seo', 'blogs', 'categories', 'tags', 'currentCategory', 'currentTag', 'alternateUrls'));
     }
 
     /**
@@ -143,7 +155,19 @@ class FrontController extends Controller
         $tags = Tag::active()->has('blogs')->get();
         $currentCategory = null;
 
-        return view('front.blogs', compact('seo', 'blogs', 'categories', 'tags', 'currentCategory', 'currentTag'));
+        // Alternate URLs for language switching
+        $alternateUrls = [];
+        foreach (['az', 'en', 'ru'] as $locale) {
+            $translation = $currentTag->translate($locale);
+            if ($translation && $translation->slug) {
+                $alternateUrls[$locale] = \LaravelLocalization::localizeURL(
+                    route('front.blogs.tag', ['tagSlug' => $translation->slug]),
+                    $locale
+                );
+            }
+        }
+
+        return view('front.blogs', compact('seo', 'blogs', 'categories', 'tags', 'currentCategory', 'currentTag', 'alternateUrls'));
     }
 
     /**
@@ -177,7 +201,23 @@ class FrontController extends Controller
         $categories = BlogCategory::active()->ordered()->get();
         $tags = Tag::active()->has('blogs')->get();
 
-        return view('front.blogs', compact('seo', 'blogs', 'categories', 'tags', 'currentCategory', 'currentTag'));
+        // Alternate URLs for language switching
+        $alternateUrls = [];
+        foreach (['az', 'en', 'ru'] as $locale) {
+            $catTrans = $currentCategory->translate($locale);
+            $tagTrans = $currentTag->translate($locale);
+            if ($catTrans && $catTrans->slug && $tagTrans && $tagTrans->slug) {
+                $alternateUrls[$locale] = \LaravelLocalization::localizeURL(
+                    route('front.blogs.category.tag', [
+                        'categorySlug' => $catTrans->slug,
+                        'tagSlug' => $tagTrans->slug
+                    ]),
+                    $locale
+                );
+            }
+        }
+
+        return view('front.blogs', compact('seo', 'blogs', 'categories', 'tags', 'currentCategory', 'currentTag', 'alternateUrls'));
     }
 
     /**
@@ -212,7 +252,19 @@ class FrontController extends Controller
             ->take(12)
             ->get();
 
-        return view('front.blog-detail', compact('blog', 'mostReadBlogs', 'relatedBlogs'));
+        // Alternate URLs for language switching
+        $alternateUrls = [];
+        foreach (['az', 'en', 'ru'] as $locale) {
+            $translation = $blog->translate($locale);
+            if ($translation && $translation->slug) {
+                $alternateUrls[$locale] = \LaravelLocalization::localizeURL(
+                    route('front.blog.detail', ['slug' => $translation->slug]),
+                    $locale
+                );
+            }
+        }
+
+        return view('front.blog-detail', compact('blog', 'mostReadBlogs', 'relatedBlogs', 'alternateUrls'));
     }
 
     /**

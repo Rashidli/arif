@@ -10,10 +10,54 @@
                             @if(session('message'))
                                 <div class="alert alert-success">{{session('message')}}</div>
                             @endif
-                            <h4 class="card-title">Məqalələr</h4>
-                            <a href="{{route('blogs.create')}}" class="btn btn-primary">+</a>
-                            <br>
-                            <br>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h4 class="card-title mb-0">Məqalələr</h4>
+                                <a href="{{route('blogs.create')}}" class="btn btn-primary">
+                                    <i class="mdi mdi-plus"></i> Yeni Məqalə
+                                </a>
+                            </div>
+
+                            {{-- Filters --}}
+                            <form method="GET" action="{{ route('blogs.index') }}" class="mb-4">
+                                <div class="row g-3">
+                                    <div class="col-md-3">
+                                        <input type="text" name="search" class="form-control" placeholder="Başlıq axtar..." value="{{ request('search') }}">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <select name="category" class="form-select">
+                                            <option value="">Bütün kateqoriyalar</option>
+                                            @foreach($categories as $category)
+                                                <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
+                                                    {{ $category->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <select name="status" class="form-select">
+                                            <option value="">Bütün statuslar</option>
+                                            <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Aktiv</option>
+                                            <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Deaktiv</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <select name="featured" class="form-select">
+                                            <option value="">Featured</option>
+                                            <option value="yes" {{ request('featured') === 'yes' ? 'selected' : '' }}>Bəli</option>
+                                            <option value="no" {{ request('featured') === 'no' ? 'selected' : '' }}>Xeyr</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button type="submit" class="btn btn-secondary">
+                                            <i class="mdi mdi-magnify"></i> Axtar
+                                        </button>
+                                        <a href="{{ route('blogs.index') }}" class="btn btn-outline-secondary">
+                                            <i class="mdi mdi-refresh"></i> Sıfırla
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
+
                             <div class="table-responsive">
                                 <table class="table table-centered mb-0 align-middle table-hover table-nowrap">
                                     <thead>
