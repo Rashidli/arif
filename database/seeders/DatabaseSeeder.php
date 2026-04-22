@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             ProductionSeeder::class,
-            // BlogSeeder::class, // Uncomment to add sample blog posts
+            BlogSeeder::class, // Sample blog posts with images
         ]);
     }
 }

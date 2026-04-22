@@ -35,7 +35,9 @@
             @if(($socials ?? collect())->count() > 0)
                 @foreach($socials as $social)
                     <a href="{{ $social->link }}" target="_blank" rel="noopener" class="footer-social-link" title="{{ $social->title }}">
-                        {!! $social->icon !!}
+                        @if($social->icon)
+                            <img src="{{ asset('storage/' . $social->icon) }}" alt="{{ $social->title }}" width="24" height="24">
+                        @endif
                     </a>
                 @endforeach
             @else

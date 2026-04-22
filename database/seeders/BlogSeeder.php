@@ -4,168 +4,266 @@ namespace Database\Seeders;
 
 use App\Models\Blog;
 use App\Models\BlogCategory;
+use App\Models\Tag;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class BlogSeeder extends Seeder
 {
     public function run(): void
     {
-        $categoryIds = BlogCategory::pluck('id')->toArray();
+        $categories = BlogCategory::all();
+        $tags = Tag::all();
 
-        $blogs = [
-            [
-                'az' => ['title' => 'Süni İntellektin Gələcəyi: 2025-ci ildə Nələr Gözləyir?', 'short' => 'Süni intellekt texnologiyaları sürətlə inkişaf edir. 2025-ci ildə bizi hansı yeniliklər gözləyir?'],
-                'en' => ['title' => 'The Future of AI: What to Expect in 2025?', 'short' => 'AI technologies are rapidly evolving. What innovations await us in 2025?'],
+        // Create blogs directory if not exists
+        if (!Storage::disk('public')->exists('blogs')) {
+            Storage::disk('public')->makeDirectory('blogs');
+        }
+
+        // Blog data organized by category theme
+        $blogsByCategory = [
+            // Technology category blogs
+            'technology' => [
+                ['az' => 'Süni İntellektin Gələcəyi: 2025-ci ildə Nələr Gözləyir?', 'en' => 'The Future of AI: What to Expect in 2025?', 'ru' => 'Будущее ИИ: Чего ожидать в 2025?'],
+                ['az' => 'Kvant Kompüterləri və İnqilabi Dəyişikliklər', 'en' => 'Quantum Computers and Revolutionary Changes', 'ru' => 'Квантовые компьютеры и революционные изменения'],
+                ['az' => '5G Texnologiyası: Sürət və İmkanlar', 'en' => '5G Technology: Speed and Possibilities', 'ru' => 'Технология 5G: Скорость и возможности'],
+                ['az' => 'IoT: Əşyaların İnterneti və Gündəlik Həyat', 'en' => 'IoT: Internet of Things in Daily Life', 'ru' => 'IoT: Интернет вещей в повседневной жизни'],
+                ['az' => 'Virtual Reallıq: Gələcəyin Texnologiyası', 'en' => 'Virtual Reality: Technology of the Future', 'ru' => 'Виртуальная реальность: Технология будущего'],
+                ['az' => 'Blockchain və Kriptovalyutaların İnkişafı', 'en' => 'Blockchain and Cryptocurrency Development', 'ru' => 'Развитие блокчейна и криптовалют'],
+                ['az' => 'Bulud Texnologiyaları: AWS vs Azure vs GCP', 'en' => 'Cloud Technologies: AWS vs Azure vs GCP', 'ru' => 'Облачные технологии: AWS vs Azure vs GCP'],
+                ['az' => 'Edge Computing: Yeni Era', 'en' => 'Edge Computing: A New Era', 'ru' => 'Edge Computing: Новая эра'],
+                ['az' => 'Metaverse: Virtual Dünyalara Giriş', 'en' => 'Metaverse: Entering Virtual Worlds', 'ru' => 'Метавселенная: Вход в виртуальные миры'],
+                ['az' => 'Kibertəhlükəsizlik Trendləri 2025', 'en' => 'Cybersecurity Trends 2025', 'ru' => 'Тренды кибербезопасности 2025'],
             ],
-            [
-                'az' => ['title' => 'Web Dizaynda Minimalizm Trendi', 'short' => 'Sadəlik gözəllikdir. Minimalist web dizaynın üstünlükləri və tətbiqi haqqında.'],
-                'en' => ['title' => 'Minimalism Trend in Web Design', 'short' => 'Simplicity is beauty. About the advantages and application of minimalist web design.'],
+            // Programming category blogs
+            'programming' => [
+                ['az' => 'Laravel 11: Yeni Xüsusiyyətlər və Təkmilləşdirmələr', 'en' => 'Laravel 11: New Features and Improvements', 'ru' => 'Laravel 11: Новые функции и улучшения'],
+                ['az' => 'React vs Vue vs Angular: Müqayisə', 'en' => 'React vs Vue vs Angular: Comparison', 'ru' => 'React vs Vue vs Angular: Сравнение'],
+                ['az' => 'TypeScript ilə Güclü Tip Sistemi', 'en' => 'Strong Type System with TypeScript', 'ru' => 'Строгая типизация с TypeScript'],
+                ['az' => 'Node.js ilə Backend Development', 'en' => 'Backend Development with Node.js', 'ru' => 'Backend разработка с Node.js'],
+                ['az' => 'Python: Maşın Öyrənməsinin Dili', 'en' => 'Python: The Language of Machine Learning', 'ru' => 'Python: Язык машинного обучения'],
+                ['az' => 'Clean Code Prinsipləri və Tətbiqi', 'en' => 'Clean Code Principles and Application', 'ru' => 'Принципы чистого кода и применение'],
+                ['az' => 'Git ilə Effektiv Version Kontrolu', 'en' => 'Effective Version Control with Git', 'ru' => 'Эффективный контроль версий с Git'],
+                ['az' => 'Docker və Kubernetes: DevOps Əsasları', 'en' => 'Docker and Kubernetes: DevOps Basics', 'ru' => 'Docker и Kubernetes: Основы DevOps'],
+                ['az' => 'API Dizayn: REST vs GraphQL', 'en' => 'API Design: REST vs GraphQL', 'ru' => 'Проектирование API: REST vs GraphQL'],
+                ['az' => 'Microservices Arxitekturası: Üstünlüklər və Çətinliklər', 'en' => 'Microservices Architecture: Benefits and Challenges', 'ru' => 'Микросервисная архитектура: Преимущества и сложности'],
             ],
-            [
-                'az' => ['title' => 'Laravel 11: Yeni Xüsusiyyətlər', 'short' => 'Laravel 11 ilə gələn yeniliklər və təkmilləşdirmələr haqqında ətraflı məlumat.'],
-                'en' => ['title' => 'Laravel 11: New Features', 'short' => 'Detailed information about innovations and improvements coming with Laravel 11.'],
+            // Design category blogs
+            'design' => [
+                ['az' => 'UI/UX Dizayn Trendləri 2025', 'en' => 'UI/UX Design Trends 2025', 'ru' => 'Тренды UI/UX дизайна 2025'],
+                ['az' => 'Minimalist Web Dizayn Prinsipləri', 'en' => 'Minimalist Web Design Principles', 'ru' => 'Принципы минималистичного веб-дизайна'],
+                ['az' => 'Dark Mode: Dizayn və İstifadəçi Təcrübəsi', 'en' => 'Dark Mode: Design and User Experience', 'ru' => 'Темный режим: Дизайн и пользовательский опыт'],
+                ['az' => 'Responsive Dizayn: Hər Cihaz Üçün', 'en' => 'Responsive Design: For Every Device', 'ru' => 'Адаптивный дизайн: Для любого устройства'],
+                ['az' => 'Figma ilə Prototipləmə və Dizayn', 'en' => 'Prototyping and Design with Figma', 'ru' => 'Прототипирование и дизайн в Figma'],
+                ['az' => 'Rəng Psixologiyası Web Dizaynda', 'en' => 'Color Psychology in Web Design', 'ru' => 'Психология цвета в веб-дизайне'],
+                ['az' => 'Typography: Şrift Seçimi və Tətbiqi', 'en' => 'Typography: Font Selection and Application', 'ru' => 'Типографика: Выбор и применение шрифтов'],
+                ['az' => 'Motion Design və Mikro-animasiyalar', 'en' => 'Motion Design and Micro-animations', 'ru' => 'Motion дизайн и микроанимации'],
+                ['az' => 'Design System Yaratmaq', 'en' => 'Creating a Design System', 'ru' => 'Создание дизайн-системы'],
+                ['az' => 'Accessibility: Hamı Üçün Dizayn', 'en' => 'Accessibility: Design for Everyone', 'ru' => 'Доступность: Дизайн для всех'],
             ],
-            [
-                'az' => ['title' => 'React vs Vue: Hansını Seçməli?', 'short' => 'Frontend framework seçimi çətindir. React və Vue müqayisəsi.'],
-                'en' => ['title' => 'React vs Vue: Which One to Choose?', 'short' => 'Choosing a frontend framework is difficult. Comparison of React and Vue.'],
+            // Startup category blogs
+            'startup' => [
+                ['az' => 'Startup İdeyasını Necə Doğrulamaq Olar?', 'en' => 'How to Validate Your Startup Idea?', 'ru' => 'Как проверить идею стартапа?'],
+                ['az' => 'MVP: Minimum Viable Product Strategiyası', 'en' => 'MVP: Minimum Viable Product Strategy', 'ru' => 'MVP: Стратегия минимально жизнеспособного продукта'],
+                ['az' => 'Startup Maliyyələşdirilməsi: Seed-dən Series A-ya', 'en' => 'Startup Funding: From Seed to Series A', 'ru' => 'Финансирование стартапа: От Seed до Series A'],
+                ['az' => 'Product-Market Fit: Uğurun Açarı', 'en' => 'Product-Market Fit: The Key to Success', 'ru' => 'Product-Market Fit: Ключ к успеху'],
+                ['az' => 'Growth Hacking Texnikaları', 'en' => 'Growth Hacking Techniques', 'ru' => 'Техники Growth Hacking'],
+                ['az' => 'Startup Komandası Necə Qurulur?', 'en' => 'How to Build a Startup Team?', 'ru' => 'Как построить команду стартапа?'],
+                ['az' => 'Pitch Deck Hazırlamaq: İnvestorları Cəlb Etmək', 'en' => 'Creating a Pitch Deck: Attracting Investors', 'ru' => 'Создание Pitch Deck: Привлечение инвесторов'],
+                ['az' => 'SaaS Biznes Modeli', 'en' => 'SaaS Business Model', 'ru' => 'Бизнес-модель SaaS'],
+                ['az' => 'Startup Uğursuzluqlarından Dərslər', 'en' => 'Lessons from Startup Failures', 'ru' => 'Уроки из неудач стартапов'],
+                ['az' => 'Scaling: Böyümə Strategiyaları', 'en' => 'Scaling: Growth Strategies', 'ru' => 'Масштабирование: Стратегии роста'],
             ],
-            [
-                'az' => ['title' => 'Uzaqdan İş: Effektiv Strategiyalar', 'short' => 'Evdən işləyərkən məhsuldar olmaq üçün praktik məsləhətlər.'],
-                'en' => ['title' => 'Remote Work: Effective Strategies', 'short' => 'Practical tips for staying productive while working from home.'],
-            ],
-            [
-                'az' => ['title' => 'TypeScript ilə Daha Təhlükəsiz Kod', 'short' => 'TypeScript JavaScript-ə tip təhlükəsizliyi əlavə edir. Niyə keçməlisiniz?'],
-                'en' => ['title' => 'Safer Code with TypeScript', 'short' => 'TypeScript adds type safety to JavaScript. Why should you switch?'],
-            ],
-            [
-                'az' => ['title' => 'UI/UX Dizayn Prinsipləri', 'short' => 'İstifadəçi təcrübəsini yaxşılaşdırmaq üçün əsas dizayn prinsipləri.'],
-                'en' => ['title' => 'UI/UX Design Principles', 'short' => 'Key design principles to improve user experience.'],
-            ],
-            [
-                'az' => ['title' => 'Docker ilə Development Mühiti', 'short' => 'Docker konteynerləri ilə stabil development mühiti yaratmaq.'],
-                'en' => ['title' => 'Development Environment with Docker', 'short' => 'Creating a stable development environment with Docker containers.'],
-            ],
-            [
-                'az' => ['title' => 'API Dizayn Best Practices', 'short' => 'RESTful API dizaynında ən yaxşı təcrübələr və standartlar.'],
-                'en' => ['title' => 'API Design Best Practices', 'short' => 'Best practices and standards in RESTful API design.'],
-            ],
-            [
-                'az' => ['title' => 'Kibertəhlükəsizlik Əsasları', 'short' => 'Onlayn təhlükəsizliyinizi qorumaq üçün bilməli olduğunuz əsaslar.'],
-                'en' => ['title' => 'Cybersecurity Basics', 'short' => 'Basics you need to know to protect your online security.'],
-            ],
-            [
-                'az' => ['title' => 'Machine Learning Başlanğıc', 'short' => 'Maşın öyrənməsinə başlamaq istəyənlər üçün bələdçi.'],
-                'en' => ['title' => 'Getting Started with Machine Learning', 'short' => 'A guide for those who want to get started with machine learning.'],
-            ],
-            [
-                'az' => ['title' => 'Git ilə Version Kontrolu', 'short' => 'Git əsasları və effektiv branching strategiyaları.'],
-                'en' => ['title' => 'Version Control with Git', 'short' => 'Git basics and effective branching strategies.'],
-            ],
-            [
-                'az' => ['title' => 'Responsive Dizayn Texnikaları', 'short' => 'Bütün cihazlarda mükəmməl görünən saytlar yaratmaq.'],
-                'en' => ['title' => 'Responsive Design Techniques', 'short' => 'Creating websites that look perfect on all devices.'],
-            ],
-            [
-                'az' => ['title' => 'Cloud Computing Əsasları', 'short' => 'Bulud hesablama nədir və niyə vacibdir?'],
-                'en' => ['title' => 'Cloud Computing Basics', 'short' => 'What is cloud computing and why is it important?'],
-            ],
-            [
-                'az' => ['title' => 'Agile Metodologiya', 'short' => 'Çevik layihə idarəetməsi prinsipləri və Scrum.'],
-                'en' => ['title' => 'Agile Methodology', 'short' => 'Agile project management principles and Scrum.'],
-            ],
-            [
-                'az' => ['title' => 'Database Optimallaşdırma', 'short' => 'SQL sorğularını sürətləndirmək üçün praktik üsullar.'],
-                'en' => ['title' => 'Database Optimization', 'short' => 'Practical methods to speed up SQL queries.'],
-            ],
-            [
-                'az' => ['title' => 'Mobil App Development Trendləri', 'short' => '2025-ci ildə mobil tətbiq inkişafında əsas trendlər.'],
-                'en' => ['title' => 'Mobile App Development Trends', 'short' => 'Key trends in mobile app development in 2025.'],
-            ],
-            [
-                'az' => ['title' => 'JavaScript ES2024 Yenilikləri', 'short' => 'JavaScript-in ən son versiyasında gələn yeniliklər.'],
-                'en' => ['title' => 'JavaScript ES2024 Updates', 'short' => 'Updates coming in the latest version of JavaScript.'],
-            ],
-            [
-                'az' => ['title' => 'Clean Code Prinsipləri', 'short' => 'Oxunaqlı və saxlanıla bilən kod yazmaq üçün prinsiplər.'],
-                'en' => ['title' => 'Clean Code Principles', 'short' => 'Principles for writing readable and maintainable code.'],
-            ],
-            [
-                'az' => ['title' => 'DevOps Mədəniyyəti', 'short' => 'Development və Operations komandalarının birləşməsi.'],
-                'en' => ['title' => 'DevOps Culture', 'short' => 'The merger of Development and Operations teams.'],
-            ],
-            [
-                'az' => ['title' => 'Blockchain Texnologiyası', 'short' => 'Blockchain necə işləyir və harada istifadə olunur?'],
-                'en' => ['title' => 'Blockchain Technology', 'short' => 'How does blockchain work and where is it used?'],
-            ],
-            [
-                'az' => ['title' => 'PWA: Progressive Web Apps', 'short' => 'Web tətbiqlərini mobil tətbiq kimi işlətmək.'],
-                'en' => ['title' => 'PWA: Progressive Web Apps', 'short' => 'Running web applications like mobile apps.'],
-            ],
-            [
-                'az' => ['title' => 'Figma ilə Prototipləmə', 'short' => 'Figma istifadə edərək interaktiv prototiplər yaratmaq.'],
-                'en' => ['title' => 'Prototyping with Figma', 'short' => 'Creating interactive prototypes using Figma.'],
-            ],
-            [
-                'az' => ['title' => 'SEO Əsasları Developerlar Üçün', 'short' => 'Developerların bilməli olduğu SEO texnikaları.'],
-                'en' => ['title' => 'SEO Basics for Developers', 'short' => 'SEO techniques that developers should know.'],
-            ],
-            [
-                'az' => ['title' => 'Microservices Arxitekturası', 'short' => 'Monolit arxitekturadan microservices-ə keçid.'],
-                'en' => ['title' => 'Microservices Architecture', 'short' => 'Transitioning from monolithic architecture to microservices.'],
+            // Career category blogs
+            'career' => [
+                ['az' => 'IT Sahəsində Karyera Qurmaq', 'en' => 'Building a Career in IT', 'ru' => 'Построение карьеры в IT'],
+                ['az' => 'Remote İş: Üstünlüklər və Çətinliklər', 'en' => 'Remote Work: Benefits and Challenges', 'ru' => 'Удаленная работа: Преимущества и сложности'],
+                ['az' => 'Texniki Müsahibəyə Hazırlıq', 'en' => 'Preparing for Technical Interviews', 'ru' => 'Подготовка к техническому интервью'],
+                ['az' => 'Freelance vs Tam Zamanlı İş', 'en' => 'Freelance vs Full-time Employment', 'ru' => 'Фриланс vs Полная занятость'],
+                ['az' => 'Soft Skills: Texniki Bacarıqlardan Əlavə', 'en' => 'Soft Skills: Beyond Technical Abilities', 'ru' => 'Soft Skills: Помимо технических навыков'],
+                ['az' => 'Portfolio Necə Hazırlanmalı?', 'en' => 'How to Prepare a Portfolio?', 'ru' => 'Как подготовить портфолио?'],
+                ['az' => 'Burnout: Peşəkar Tükənmə və Qarşısının Alınması', 'en' => 'Burnout: Professional Exhaustion and Prevention', 'ru' => 'Выгорание: Профессиональное истощение и профилактика'],
+                ['az' => 'Networking: Peşəkar Əlaqələr Qurmaq', 'en' => 'Networking: Building Professional Connections', 'ru' => 'Нетворкинг: Построение профессиональных связей'],
+                ['az' => 'Junior-dan Senior-a: İnkişaf Yolu', 'en' => 'From Junior to Senior: Development Path', 'ru' => 'От Junior до Senior: Путь развития'],
+                ['az' => 'Tech Lead Olmaq: Rəhbərlik Bacarıqları', 'en' => 'Becoming a Tech Lead: Leadership Skills', 'ru' => 'Стать Tech Lead: Навыки лидерства'],
             ],
         ];
 
-        $loremAz = '<p>Bu məqalədə ətraflı məlumat əldə edəcəksiniz. Texnologiya dünyası sürətlə dəyişir və bu dəyişikliklərə uyğunlaşmaq vacibdir.</p>
+        $loremAz = '<p>Bu məqalədə texnologiya dünyasının ən son trendlərini və yeniliklərini kəşf edəcəksiniz. Müasir dövrün sürətli inkişafı fonunda özünüzü yeniliklərlə tanış etmək vacibdir.</p>
 <h2>Əsas Məqamlar</h2>
-<p>Müasir dünyada texnologiya bilikləri hər kəs üçün vacibdir. Bu sahədə özünüzü inkişaf etdirmək karyeranız üçün böyük üstünlük təmin edəcək.</p>
-<p>Aşağıdakı məqamları nəzərə almaq lazımdır:</p>
+<p>Texnologiya sahəsi daim dəyişir və inkişaf edir. Bu dəyişikliklərə uyğunlaşmaq üçün aşağıdakı məqamlara diqqət yetirmək lazımdır:</p>
 <ul>
-<li>Daimi öyrənmə və inkişaf</li>
+<li>Yeni texnologiyaları öyrənmək və tətbiq etmək</li>
+<li>Sənaye trendlərini izləmək</li>
 <li>Praktik təcrübə qazanmaq</li>
-<li>Cəmiyyətlə əlaqədə olmaq</li>
+<li>Peşəkar cəmiyyətlərlə əlaqədə olmaq</li>
 </ul>
+<h2>Gələcək Perspektivləri</h2>
+<p>Gələcəkdə bu sahədə daha çox yenilik gözlənilir. Süni intellekt, avtomatlaşdırma və rəqəmsal transformasiya prosesləri sürətlənəcək.</p>
+<blockquote>Texnologiya gələcəyi formalaşdırır, amma onu formalaşdıranlar insanlardır.</blockquote>
 <h2>Nəticə</h2>
-<p>Texnologiya sahəsində uğur qazanmaq üçün davamlı öyrənmə şərtdir. Bu məqalədəki məsləhətləri tətbiq edərək öz bacarıqlarınızı artıra bilərsiniz.</p>';
+<p>Bu məqalədəki məlumatları tətbiq edərək öz bilik və bacarıqlarınızı artıra bilərsiniz. Daimi öyrənmə uğurun əsas şərtidir.</p>';
 
-        $loremEn = '<p>In this article, you will gain detailed information. The world of technology is changing rapidly and it is important to adapt to these changes.</p>
+        $loremEn = '<p>In this article, you will discover the latest trends and innovations in the world of technology. In the context of rapid development of the modern era, it is important to familiarize yourself with innovations.</p>
 <h2>Key Points</h2>
-<p>Technology skills are important for everyone in the modern world. Developing yourself in this field will provide a great advantage for your career.</p>
-<p>The following points should be considered:</p>
+<p>The technology field is constantly changing and evolving. To adapt to these changes, you need to pay attention to the following points:</p>
 <ul>
-<li>Continuous learning and development</li>
+<li>Learning and applying new technologies</li>
+<li>Following industry trends</li>
 <li>Gaining practical experience</li>
-<li>Staying connected with the community</li>
+<li>Staying connected with professional communities</li>
 </ul>
+<h2>Future Perspectives</h2>
+<p>More innovations are expected in this field in the future. Artificial intelligence, automation, and digital transformation processes will accelerate.</p>
+<blockquote>Technology shapes the future, but it is people who shape technology.</blockquote>
 <h2>Conclusion</h2>
-<p>Continuous learning is essential for success in technology. You can improve your skills by applying the tips in this article.</p>';
+<p>By applying the information in this article, you can improve your knowledge and skills. Continuous learning is the main condition for success.</p>';
 
-        foreach ($blogs as $i => $blogData) {
-            $blog = Blog::create([
-                'blog_category_id' => $categoryIds[array_rand($categoryIds)],
-                'is_active' => true,
-                'is_featured' => $i < 3, // First 3 are featured
-                'view' => rand(10, 500),
-            ]);
+        $loremRu = '<p>В этой статье вы откроете для себя последние тренды и инновации в мире технологий. В контексте быстрого развития современной эпохи важно знакомиться с новинками.</p>
+<h2>Ключевые моменты</h2>
+<p>Технологическая сфера постоянно меняется и развивается. Чтобы адаптироваться к этим изменениям, необходимо обратить внимание на следующие моменты:</p>
+<ul>
+<li>Изучение и применение новых технологий</li>
+<li>Следование отраслевым тенденциям</li>
+<li>Получение практического опыта</li>
+<li>Поддержание связи с профессиональными сообществами</li>
+</ul>
+<h2>Перспективы на будущее</h2>
+<p>В будущем в этой области ожидается больше инноваций. Процессы искусственного интеллекта, автоматизации и цифровой трансформации ускорятся.</p>
+<blockquote>Технологии формируют будущее, но формируют технологии люди.</blockquote>
+<h2>Заключение</h2>
+<p>Применяя информацию из этой статьи, вы можете улучшить свои знания и навыки. Непрерывное обучение - главное условие успеха.</p>';
 
-            $slugAz = Str::slug($blogData['az']['title']);
-            $slugEn = Str::slug($blogData['en']['title']);
+        $categoryKeys = ['technology', 'programming', 'design', 'startup', 'career'];
+        $blogIndex = 0;
+        $sliderIndex = 0;
 
-            $blog->translateOrNew('az')->title = $blogData['az']['title'];
-            $blog->translateOrNew('az')->short_description = $blogData['az']['short'];
-            $blog->translateOrNew('az')->description = $loremAz;
-            $blog->translateOrNew('az')->slug = $slugAz;
-            $blog->translateOrNew('az')->meta_title = $blogData['az']['title'];
-            $blog->translateOrNew('az')->meta_description = $blogData['az']['short'];
+        foreach ($categories as $catIndex => $category) {
+            $categoryKey = $categoryKeys[$catIndex] ?? 'technology';
+            $blogs = $blogsByCategory[$categoryKey] ?? $blogsByCategory['technology'];
 
-            $blog->translateOrNew('en')->title = $blogData['en']['title'];
-            $blog->translateOrNew('en')->short_description = $blogData['en']['short'];
-            $blog->translateOrNew('en')->description = $loremEn;
-            $blog->translateOrNew('en')->slug = $slugEn;
-            $blog->translateOrNew('en')->meta_title = $blogData['en']['title'];
-            $blog->translateOrNew('en')->meta_description = $blogData['en']['short'];
+            foreach ($blogs as $i => $blogData) {
+                $isSlider = $sliderIndex < 5; // First 5 blogs across all categories are sliders
+                $isFeatured = $i < 3; // First 3 in each category are featured
 
-            $blog->save();
+                // Download and save image from picsum
+                $imagePath = $this->downloadImage($blogIndex);
+
+                $blog = Blog::create([
+                    'blog_category_id' => $category->id,
+                    'image' => $imagePath,
+                    'is_active' => true,
+                    'is_featured' => $isFeatured,
+                    'is_slider' => $isSlider,
+                    'slider_order' => $isSlider ? $sliderIndex + 1 : null,
+                    'view' => rand(50, 2000),
+                ]);
+
+                $slugAz = Str::slug($blogData['az']) . '-' . $blog->id;
+                $slugEn = Str::slug($blogData['en']) . '-' . $blog->id;
+                $slugRu = Str::slug($blogData['ru']) . '-' . $blog->id;
+
+                // Azerbaijani
+                $blog->translateOrNew('az')->title = $blogData['az'];
+                $blog->translateOrNew('az')->short_description = $this->generateShortDesc($blogData['az'], 'az');
+                $blog->translateOrNew('az')->description = $loremAz;
+                $blog->translateOrNew('az')->slug = $slugAz;
+                $blog->translateOrNew('az')->meta_title = $blogData['az'];
+                $blog->translateOrNew('az')->meta_description = $this->generateShortDesc($blogData['az'], 'az');
+                $blog->translateOrNew('az')->img_alt = $blogData['az'];
+                $blog->translateOrNew('az')->img_title = $blogData['az'];
+
+                // English
+                $blog->translateOrNew('en')->title = $blogData['en'];
+                $blog->translateOrNew('en')->short_description = $this->generateShortDesc($blogData['en'], 'en');
+                $blog->translateOrNew('en')->description = $loremEn;
+                $blog->translateOrNew('en')->slug = $slugEn;
+                $blog->translateOrNew('en')->meta_title = $blogData['en'];
+                $blog->translateOrNew('en')->meta_description = $this->generateShortDesc($blogData['en'], 'en');
+                $blog->translateOrNew('en')->img_alt = $blogData['en'];
+                $blog->translateOrNew('en')->img_title = $blogData['en'];
+
+                // Russian
+                $blog->translateOrNew('ru')->title = $blogData['ru'];
+                $blog->translateOrNew('ru')->short_description = $this->generateShortDesc($blogData['ru'], 'ru');
+                $blog->translateOrNew('ru')->description = $loremRu;
+                $blog->translateOrNew('ru')->slug = $slugRu;
+                $blog->translateOrNew('ru')->meta_title = $blogData['ru'];
+                $blog->translateOrNew('ru')->meta_description = $this->generateShortDesc($blogData['ru'], 'ru');
+                $blog->translateOrNew('ru')->img_alt = $blogData['ru'];
+                $blog->translateOrNew('ru')->img_title = $blogData['ru'];
+
+                $blog->save();
+
+                // Attach random tags (2-4 tags per blog)
+                if ($tags->count() > 0) {
+                    $randomTags = $tags->random(min(rand(2, 4), $tags->count()));
+                    $blog->tags()->attach($randomTags->pluck('id'));
+                }
+
+                $blogIndex++;
+                if ($isSlider) $sliderIndex++;
+
+                $this->command->info("Created blog: {$blogData['en']}");
+            }
         }
+
+        $this->command->info("Total blogs created: {$blogIndex}");
+    }
+
+    private function downloadImage(int $index): ?string
+    {
+        try {
+            // Use picsum with seed for consistent futuristic-looking images
+            $seeds = [
+                'tech', 'code', 'future', 'digital', 'cyber', 'neon', 'space', 'data', 'ai', 'robot',
+                'circuit', 'network', 'cloud', 'server', 'matrix', 'binary', 'pixel', 'chip', 'cpu', 'gpu',
+                'laptop', 'screen', 'monitor', 'keyboard', 'mouse', 'phone', 'tablet', 'vr', 'ar', 'hologram',
+                'startup', 'office', 'team', 'meeting', 'coffee', 'desk', 'workspace', 'creative', 'idea', 'innovation',
+                'design', 'color', 'palette', 'brush', 'pencil', 'sketch', 'wireframe', 'mockup', 'prototype', 'ui'
+            ];
+
+            $seed = $seeds[$index % count($seeds)] . $index;
+            $imageUrl = "https://picsum.photos/seed/{$seed}/800/500";
+
+            $imageContent = @file_get_contents($imageUrl);
+
+            if ($imageContent === false) {
+                $this->command->warn("Could not download image for blog {$index}");
+                return null;
+            }
+
+            $filename = 'blogs/blog_' . time() . '_' . $index . '.jpg';
+            Storage::disk('public')->put($filename, $imageContent);
+
+            return $filename;
+        } catch (\Exception $e) {
+            $this->command->warn("Error downloading image: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    private function generateShortDesc(string $title, string $locale): string
+    {
+        $descriptions = [
+            'az' => [
+                'Bu məqalədə ' . mb_strtolower($title) . ' mövzusunu ətraflı araşdırırıq.',
+                $title . ' - müasir texnologiya dünyasının ən aktual mövzularından biri.',
+                'Gəlin birlikdə ' . mb_strtolower($title) . ' haqqında daha çox öyrənək.',
+            ],
+            'en' => [
+                'In this article, we explore the topic of ' . strtolower($title) . ' in detail.',
+                $title . ' - one of the most relevant topics in modern technology.',
+                'Let\'s learn more about ' . strtolower($title) . ' together.',
+            ],
+            'ru' => [
+                'В этой статье мы подробно рассмотрим тему: ' . mb_strtolower($title) . '.',
+                $title . ' - одна из самых актуальных тем в современных технологиях.',
+                'Давайте вместе узнаем больше о теме: ' . mb_strtolower($title) . '.',
+            ],
+        ];
+
+        return $descriptions[$locale][array_rand($descriptions[$locale])];
     }
 }
