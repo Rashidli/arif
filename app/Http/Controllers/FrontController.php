@@ -120,10 +120,7 @@ class FrontController extends Controller
         foreach (['az', 'en', 'ru'] as $locale) {
             $translation = $currentCategory->translate($locale);
             if ($translation && $translation->slug) {
-                $alternateUrls[$locale] = \LaravelLocalization::localizeURL(
-                    route('front.blogs.category', ['categorySlug' => $translation->slug]),
-                    $locale
-                );
+                $alternateUrls[$locale] = url($locale . '/category/' . $translation->slug);
             }
         }
 
@@ -160,10 +157,7 @@ class FrontController extends Controller
         foreach (['az', 'en', 'ru'] as $locale) {
             $translation = $currentTag->translate($locale);
             if ($translation && $translation->slug) {
-                $alternateUrls[$locale] = \LaravelLocalization::localizeURL(
-                    route('front.blogs.tag', ['tagSlug' => $translation->slug]),
-                    $locale
-                );
+                $alternateUrls[$locale] = url($locale . '/tag/' . $translation->slug);
             }
         }
 
@@ -207,13 +201,7 @@ class FrontController extends Controller
             $catTrans = $currentCategory->translate($locale);
             $tagTrans = $currentTag->translate($locale);
             if ($catTrans && $catTrans->slug && $tagTrans && $tagTrans->slug) {
-                $alternateUrls[$locale] = \LaravelLocalization::localizeURL(
-                    route('front.blogs.category.tag', [
-                        'categorySlug' => $catTrans->slug,
-                        'tagSlug' => $tagTrans->slug
-                    ]),
-                    $locale
-                );
+                $alternateUrls[$locale] = url($locale . '/category/' . $catTrans->slug . '/tag/' . $tagTrans->slug);
             }
         }
 
@@ -257,10 +245,7 @@ class FrontController extends Controller
         foreach (['az', 'en', 'ru'] as $locale) {
             $translation = $blog->translate($locale);
             if ($translation && $translation->slug) {
-                $alternateUrls[$locale] = \LaravelLocalization::localizeURL(
-                    route('front.blog.detail', ['slug' => $translation->slug]),
-                    $locale
-                );
+                $alternateUrls[$locale] = url($locale . '/blog/' . $translation->slug);
             }
         }
 
